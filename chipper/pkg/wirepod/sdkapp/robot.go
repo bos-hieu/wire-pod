@@ -151,6 +151,13 @@ func connTimer(ind int) {
 				return
 			}
 		}
+
+		if ind > len(robots) {
+			logger.Println("Conn timer for robot index " + strconv.Itoa(ind) + " not found")
+			logger.LogUI(robots)
+			return
+		}
+
 		if robots[ind].ConnTimer >= 300 {
 			logger.Println("Closing SDK connection for " + robots[ind].ESN + ", source: connTimer")
 			removeRobot(robots[ind].ESN, "connTimer")

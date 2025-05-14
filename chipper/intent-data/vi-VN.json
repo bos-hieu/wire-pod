@@ -153,7 +153,7 @@
     },
     {
         "name": "intent_knowledge_promptquestion",
-        "keyphrases": ["Câu hỏi", "Trả lời"]
+        "keyphrases": ["Câu hỏi", "Trả lời", "Nói chuyện"]
     },
     {
         "name": "intent_clock_checktimer",
