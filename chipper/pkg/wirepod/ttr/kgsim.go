@@ -205,6 +205,13 @@ func StreamingKGSim(req interface{}, esn string, transcribedText string, isKG bo
 			break
 		}
 	}
+
+	if guid == "" {
+		guid = "V3g5ko+0u8v2Wr32Zy8cDg=="
+		target = "192.168.2.112:443"
+		matched = true
+	}
+
 	if matched {
 		var err error
 		robot, err = vector.New(vector.WithSerialNo(esn), vector.WithToken(guid), vector.WithTarget(target))
@@ -252,6 +259,8 @@ func StreamingKGSim(req interface{}, esn string, transcribedText string, isKG bo
 		conf.BaseURL = vars.APIConfig.Knowledge.Endpoint
 		c = openai.NewClientWithConfig(conf)
 	} else if vars.APIConfig.Knowledge.Provider == "openai" {
+		c = openai.NewClient(vars.APIConfig.Knowledge.Key)
+	} else {
 		c = openai.NewClient(vars.APIConfig.Knowledge.Key)
 	}
 	speakReady := make(chan string)
