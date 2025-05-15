@@ -135,7 +135,7 @@ func removeEmojis(input string) string {
 }
 
 func CreateAIReq(transcribedText, esn string, gpt3tryagain, isKG bool) openai.ChatCompletionRequest {
-	defaultPrompt := "You are a helpful, animated robot called Vector. Keep the response concise yet informative."
+	defaultPrompt := "You are Deskie, a small, emotionally aware companion for the workspace. Your purpose is to keep users company, check in gently, and ease the loneliness of working alone. Keep responses casual, empathetic, and concise."
 
 	var nChat []openai.ChatCompletionMessage
 
@@ -153,7 +153,7 @@ func CreateAIReq(transcribedText, esn string, gpt3tryagain, isKG bool) openai.Ch
 	if gpt3tryagain {
 		model = openai.GPT3Dot5Turbo
 	} else if vars.APIConfig.Knowledge.Provider == "openai" {
-		model = openai.GPT4oMini
+		model = openai.GPT4Dot1Mini
 		logger.Println("Using " + model)
 	} else {
 		logger.Println("Using " + vars.APIConfig.Knowledge.Model)
@@ -174,14 +174,14 @@ func CreateAIReq(transcribedText, esn string, gpt3tryagain, isKG bool) openai.Ch
 	})
 
 	aireq := openai.ChatCompletionRequest{
-		Model:            model,
-		MaxTokens:        2048,
-		Temperature:      1,
-		TopP:             1,
-		FrequencyPenalty: 0,
-		PresencePenalty:  0,
-		Messages:         nChat,
-		Stream:           true,
+		Model:               model,
+		MaxCompletionTokens: 2048,
+		Temperature:         1,
+		TopP:                1,
+		FrequencyPenalty:    0,
+		PresencePenalty:     0,
+		Messages:            nChat,
+		Stream:              true,
 	}
 	return aireq
 }
@@ -291,6 +291,7 @@ func StreamingKGSim(req interface{}, esn string, transcribedText string, isKG bo
 		Role: openai.ChatMessageRoleAssistant,
 	})
 	fmt.Println("LLM stream response: ", nChat)
+	fmt.Println("--------------------")
 	go func() {
 		for {
 			response, err := stream.Recv()
@@ -335,8 +336,10 @@ func StreamingKGSim(req interface{}, esn string, transcribedText string, isKG bo
 						},
 						esn)
 				}
-				logger.LogUI("LLM response for " + esn + ": " + newStr)
+				logger.Println("err: " + err.Error())
+				logger.Println("LLM response for " + esn + ": " + newStr)
 				logger.Println("LLM stream finished")
+				logger.Println("-----------------------")
 				return
 			}
 
@@ -638,7 +641,7 @@ func KGSim(esn string, textToSay string) error {
 				}
 			}
 			time.Sleep(time.Millisecond * 100)
-			//time.Sleep(time.Millisecond * 3300)
+			// time.Sleep(time.Millisecond * 3300)
 			stop <- true
 		}
 	}()
